@@ -1,0 +1,109 @@
+Usage: TestAtomicSharedPtr.exe [phase_duration_in_seconds]
+
+===========================================================
+    CPU: Intel(R) Core(TM) i7-8086K CPU @ 4.00GHz
+===========================================================
+
+===========================================================
+ Detected Hardware Concurrency : 12 logical threads
+ Soak Duration Per Phase       : 10 seconds
+ std::shared_ptr is_lock_free(): false
+===========================================================
+
+[RUNNING]  Phase 0: Local Handle Semantics (Atomic)...               [FINISHED] 
+[RUNNING]  Phase 1: Extended Handle API Parity (Atomic)...           [FINISHED] 
+[RUNNING]  Phase 2: Compare & Exchange Correctness (Atomic)...       [FINISHED] 
+[RUNNING]  Phase 2b: Execute-Around Correctness (Rundown)...         [FINISHED] 
+
+--- Baseline Contention (std::atomic<std::shared_ptr>) ---
+[RUNNING]  Phase 3: MPMC Benchmark (Baseline)...                      [  7.47 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 4: MPMC Benchmark (Atomic)...                        [ 26.42 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 5: MPMC Benchmark (Rundown)...                       [ 240.55 Million Ops/sec][FINISHED] 
+
+--- Extreme Oversubscription Performance ------------------
+[RUNNING]  Phase 6: Heavy CPU Oversub (Baseline)...                   [  6.82 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 7: Heavy CPU Oversub (Atomic)...                     [ 25.91 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 8: Heavy CPU Oversub (Rundown)...                    [ 115.95 Million Ops/sec][FINISHED] 
+
+--- Correctness & Chaos Soak Path -------------------------
+[RUNNING]  Phase 9: Concurrent Replacement (Baseline)...              [  6.54 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 10: Concurrent Replacement (Atomic)...               [ 26.47 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 11: Concurrent Replacement (Rundown)...              [ 281.22 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 12: Heavy Exchange Contention (Atomic)...            [  8.55 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 13: Hyper-Aggressive Chaos (Baseline)...             [  4.87 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 14: Hyper-Aggressive Chaos (Atomic)...               [ 14.97 Million Ops/sec][FINISHED] 
+[RUNNING]  Phase 15: Hyper-Aggressive Chaos (Rundown)...              [ 155.90 Million Ops/sec][FINISHED] 
+
+--- Contention Metrics & Analytics ------------------------
+[RUNNING]  Phase 16: Tail Latency (Baseline)...                      [FINISHED] 
+[RUNNING]  Phase 17: Tail Latency (Atomic)...                        [FINISHED] 
+[RUNNING]  Phase 18: Tail Latency (Rundown)...                       [FINISHED] 
+[RUNNING]  Phase 19: Thread Scaling Sweep...                         [FINISHED] 
+
+===========================================================================================
+ Thread Scaling Results (80% Read / 20% Write - Million Ops/sec)
+===========================================================================================
+Threads      Baseline (Base)    Atomic (LockFree)    Rundown (Lambda)     
+-------------------------------------------------------------------------------------------
+1                        7.65                    7.08                    7.60
+2                       11.16                   11.25                   13.00
+3                        9.74                   11.82                   19.28
+4                        7.07                   14.68                   25.35
+5                        6.22                   12.34                   31.45
+6                        5.76                   11.71                   36.71
+7                        5.62                   11.04                   41.72
+8                        5.55                   10.53                   46.33
+9                        5.48                   10.13                   51.85
+10                       5.45                   11.28                   55.99
+11                       5.40                   12.21                   59.56
+12                       5.33                    9.89                   60.33
+
+===========================================================================================
+ Thread Scaling Results (99% Read / 1% Write - Million Ops/sec)
+===========================================================================================
+Threads      Baseline (Base)    Atomic (LockFree)    Rundown (Lambda)     
+-------------------------------------------------------------------------------------------
+1                        7.63                    7.05                    8.62
+2                       11.18                   11.27                   17.27
+3                        9.99                   14.84                   25.87
+4                        7.00                   14.80                   33.43
+5                        6.11                   12.01                   42.19
+6                        5.83                   11.40                   50.66
+7                        5.64                   10.84                   59.71
+8                        5.59                   10.50                   67.49
+9                        5.51                   10.50                   75.73
+10                       5.49                   10.24                   83.86
+11                       5.38                   10.22                   92.51
+12                       5.35                   10.37                  100.07
+
+===========================================================================================
+ Thread Scaling Results (99.9% Read / 0.1% Write - Million Ops/sec)
+===========================================================================================
+Threads      Baseline (Base)    Atomic (LockFree)    Rundown (Lambda)     
+-------------------------------------------------------------------------------------------
+1                        7.64                    7.05                    8.81
+2                       11.20                   10.88                   17.60
+3                        9.63                   14.65                   26.34
+4                        6.85                   14.61                   34.75
+5                        6.11                   12.31                   43.07
+6                        5.77                   11.29                   51.71
+7                        5.61                   10.50                   59.17
+8                        5.57                   10.47                   69.77
+9                        5.53                   10.34                   75.74
+10                       5.51                   10.33                   86.65
+11                       5.41                   10.25                   94.93
+12                       5.34                   11.34                  103.64
+
+===========================================================================================
+ Tail Latency Results (nanoseconds)
+===========================================================================================
+Implementation                 P50      P90      P99.9      P99.99
+-------------------------------------------------------------------------------------------
+Baseline                        260     4399     19782      31476
+Atomic                           40       69       227        289
+Rundown                          13       15        71        102
+===========================================================================================
+
+-------------------------------------------------------------------
+All multi-threaded soak phases completed successfully!
+Zero Use-After-Free crashes. Zero memory leaks detected.

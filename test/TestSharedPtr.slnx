@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="ARM64" />
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="TestSharedPtr.vcxproj" Id="6410c5b1-baa0-4e6b-b126-2dafa032bdbe" />
+</Solution>
